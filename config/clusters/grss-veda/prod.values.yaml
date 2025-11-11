@@ -1,50 +1,49 @@
-basehub:
-  userServiceAccount:
-    annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::597746869805:role/nasa-ghg-hub-prod
-  jupyterhub:
-    ingress:
-      hosts: [hub.veda.grss.cloud]
-      tls:
-      - hosts: [hub.veda.grss.cloud]
-        secretName: https-auto-tls
-    hub:
-      config:
-        GitHubOAuthenticator:
-          oauth_callback_url: https://hub.veda.grss.cloud/hub/oauth_callback
-    singleuser:
-      nodeSelector:
-        2i2c/hub-name: prod
-  dask-gateway:
-    gateway:
-      backend:
-        scheduler:
-          extraPodConfig:
-            nodeSelector:
-              2i2c/hub-name: prod
-        worker:
-          extraPodConfig:
-            nodeSelector:
-              2i2c/hub-name: prod
+# userServiceAccount:
+#   annotations:
+#     eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-prod
+jupyterhub:
+  ingress:
+    hosts: [hub.veda.grss.cloud]
+    tls:
+    - hosts: [hub.veda.grss.cloud]
+      secretName: https-auto-tls
+  hub:
+    config:
+      GitHubOAuthenticator:
+        oauth_callback_url: https://hub.veda.grss.cloud/hub/oauth_callback
+  singleuser:
+    nodeSelector:
+      2i2c/hub-name: prod
+dask-gateway:
+  gateway:
+    backend:
+      scheduler:
+        extraPodConfig:
+          nodeSelector:
+            2i2c/hub-name: prod
+      worker:
+        extraPodConfig:
+          nodeSelector:
+            2i2c/hub-name: prod
 
-  # binderhub-service:
-  #   dockerApi:
-  #     nodeSelector:
-  #       2i2c/hub-name: prod
-  #   config:
-  #     KubernetesBuildExecutor:
-  #       node_selector:
-  #         2i2c/hub-name: prod
-  #     BinderHub:
-  #       image_prefix: quay.io/imagebuilding-non-gcp-hubs/nasa-ghg-prod-
+# binderhub-service:
+#   dockerApi:
+#     nodeSelector:
+#       2i2c/hub-name: prod
+#   config:
+#     KubernetesBuildExecutor:
+#       node_selector:
+#         2i2c/hub-name: prod
+#     BinderHub:
+#       image_prefix: quay.io/imagebuilding-non-gcp-hubs/nasa-ghg-prod-
 
-  # jupyterhub-home-nfs:
-  #   eks:
-  #     volumeId: vol-050b22932c5cf210e
-  #   quotaEnforcer:
-  #     config:
-  #       QuotaManager:
-  #         hard_quota: 50
-  # nfs:
-  #   pv:
-  #     serverIP: 10.100.172.188
+jupyterhub-home-nfs:
+  eks:
+    volumeId: vol-03634044b7a4468b9
+  quotaEnforcer:
+    config:
+      QuotaManager:
+        hard_quota: 50
+nfs:
+  pv:
+    serverIP: 10.100.43.152
