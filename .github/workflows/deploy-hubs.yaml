@@ -210,7 +210,7 @@ jobs:
       failure_grss-veda: ${{ steps.declare-failure.outputs.failure_grss-veda }}
 
     if: |
-      (github.event_name == 'push' && contains(github.ref, 'main')) &&
+      ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
       needs.generate-jobs.result == 'success' &&
       needs.generate-jobs.outputs.support-jobs != '[]'
     strategy:
@@ -269,7 +269,7 @@ jobs:
     needs: [generate-jobs, upgrade-support]
     if: |
       !cancelled() &&
-      (github.event_name == 'push' && contains(github.ref, 'main')) &&
+      ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
       needs.generate-jobs.result == 'success' &&
       needs.generate-jobs.outputs.support-jobs != '[]' &&
       needs.generate-jobs.outputs.staging-jobs != '[]' &&
@@ -344,7 +344,7 @@ jobs:
     needs: [generate-jobs, filter-failed-support]
     if: |
       !cancelled() &&
-      (github.event_name == 'push' && contains(github.ref, 'main')) &&
+      ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
       needs.generate-jobs.result == 'success' &&
       (
         needs.generate-jobs.outputs.staging-jobs != '[]' ||
@@ -401,7 +401,7 @@ jobs:
     name: ${{ matrix.jobs.cluster_name }}-${{ matrix.jobs.hub_name }}-${{ matrix.jobs.provider }}
     if: |
       !cancelled() &&
-      (github.event_name == 'push' && contains(github.ref, 'main')) &&
+      ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
       needs.reset-jobs.result == 'success' &&
       needs.reset-jobs.outputs.staging-jobs != '[]'
     strategy:
@@ -480,7 +480,7 @@ jobs:
     needs: [reset-jobs, upgrade-staging]
     if: |
       !cancelled() &&
-      (github.event_name == 'push' && contains(github.ref, 'main')) &&
+      ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
       needs.reset-jobs.result == 'success' &&
       needs.reset-jobs.outputs.prod-jobs != '[]'
     outputs:
@@ -548,7 +548,7 @@ jobs:
     name: ${{ matrix.jobs.cluster_name }}-${{ matrix.jobs.hub_name }}-${{ matrix.jobs.provider }}
     if: |
       !cancelled() &&
-      (github.event_name == 'push' && contains(github.ref, 'main')) &&
+      ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
       needs.filter-failed-staging.result == 'success' &&
       needs.filter-failed-staging.outputs.prod-jobs != '[]'
     strategy:
