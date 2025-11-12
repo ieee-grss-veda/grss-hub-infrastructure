@@ -11,7 +11,7 @@ resource "aws_iam_access_key" "continuous_deployer" {
 }
 
 resource "aws_iam_user_policy" "continuous_deployer" {
-  name = "eks-readonly"
+  name = "eks-and-kms-access"
   user = aws_iam_user.continuous_deployer.name
 
   policy = <<EOF
@@ -22,6 +22,14 @@ resource "aws_iam_user_policy" "continuous_deployer" {
       "Effect": "Allow",
       "Action": "eks:DescribeCluster",
       "Resource": "${data.aws_eks_cluster.cluster.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:${var.region}:*:key/*"
     }
   ]
 }
