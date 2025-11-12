@@ -35,7 +35,12 @@ inputs:
     description: >-
       A Google Cloud Service Account Key with KMS Decryption privileges. This allows
       us to unlock our sops-encrypted secrets required for a deploy.
-    required: true
+    required: false
+  AWS_KMS_DECRYPTOR_KEY:
+    description: >-
+      AWS credentials with KMS Decryption privileges. This allows us to unlock
+      our sops-encrypted secrets required for a deploy.
+    required: false
 
 # runs (for composite actions) configuration reference:
 # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runs-for-composite-actions
