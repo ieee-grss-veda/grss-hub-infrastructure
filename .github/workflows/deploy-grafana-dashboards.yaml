@@ -75,10 +75,10 @@ jobs:
     - name: Install sops
       uses: mdgreenwald/mozilla-sops-action@v1.6.0
 
-    - name: Setup sops credentials to decrypt repo secrets
-      uses: google-github-actions/auth@v2
-      with:
-        credentials_json: ${{ secrets.GCP_KMS_DECRYPTOR_KEY }}
+    # - name: Setup sops credentials to decrypt repo secrets
+    #   uses: google-github-actions/auth@v2
+    #   with:
+    #     credentials_json: ${{ secrets.GCP_KMS_DECRYPTOR_KEY }}
 
     - name: Deploy grafana dashboards for ${{ matrix.cluster_name }}
       run: |
