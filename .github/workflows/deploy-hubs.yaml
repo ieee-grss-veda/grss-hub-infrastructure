@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - feature/update_github_workflow
     paths:
       # Include changes to the deployer script's folder
     - deployer/**
