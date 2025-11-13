@@ -77,12 +77,6 @@ jupyterhub:
         - profile
         - email
         - groups
-      Authenticator:
-        admin_users:
-        - slesaad
-        - xhagrg
-        - julianmanandhar
-        - rashmimanandhar
   singleuser:
     cloudMetadata:
       blockWithIptables: false
