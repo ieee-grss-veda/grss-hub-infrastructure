@@ -64,6 +64,7 @@ jupyterhub:
         userdata_url: https://dev-auth.grss.veda.cloud/realms/veda/protocol/openid-connect/userinfo
         login_service: Keycloak
         username_claim: preferred_username
+        manage_groups: true
         claim_groups_key: groups
         allowed_groups:
         - JupyterHub Admin
