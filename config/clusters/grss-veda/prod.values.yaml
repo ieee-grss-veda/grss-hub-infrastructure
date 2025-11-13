@@ -11,8 +11,6 @@ jupyterhub:
     config:
       GenericOAuthenticator:
         oauth_callback_url: https://hub.veda.grss.cloud/hub/oauth_callback
-      Authenticator:
-        admin_users: []  # No hardcoded admins in production - use Keycloak groups only
   singleuser:
     nodeSelector:
       2i2c/hub-name: prod
