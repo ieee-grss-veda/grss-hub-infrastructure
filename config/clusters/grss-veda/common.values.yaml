@@ -56,16 +56,18 @@ jupyterhub:
     allowNamedServers: true
     config:
       JupyterHub:
-        authenticator_class: github
-      GitHubOAuthenticator:
-        allowed_organizations:
-        - ieee-grss-veda:jyaasa
-      Authenticator:
-        admin_users:
-        - slesaad
-        - xhagrg
-        - julianmanandhar
-        - rashmimanandhar
+        authenticator_class: generic-oauth
+      GenericOAuthenticator:
+        client_id: jupyterhub
+        authorize_url: https://dev-auth.grss.veda.cloud/realms/veda/protocol/openid-connect/auth
+        token_url: https://dev-auth.grss.veda.cloud/realms/veda/protocol/openid-connect/token
+        userdata_url: https://dev-auth.grss.veda.cloud/realms/veda/protocol/openid-connect/userinfo
+        login_service: Keycloak
+        username_claim: preferred_username
+        scope:
+        - openid
+        - profile
+        - email
   singleuser:
     cloudMetadata:
       blockWithIptables: false
