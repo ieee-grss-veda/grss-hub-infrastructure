@@ -198,6 +198,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-jobs]
     name: support-${{ matrix.jobs.cluster_name }}-${{ matrix.jobs.provider }}
+    permissions:
+      id-token: write
+      contents: read
 
     # We declare outputs indicating the job failed status of a specific job
     # variation. We are currently required to do this in a hardcoded fashion,
@@ -225,6 +228,7 @@ jobs:
       uses: ./.github/actions/setup-deploy
       with:
         provider: ${{ matrix.jobs.provider }}
+        AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
 
     - name: Upgrade support chart on cluster ${{ matrix.jobs.cluster_name }}
       run: |
@@ -399,6 +403,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [reset-jobs]
     name: ${{ matrix.jobs.cluster_name }}-${{ matrix.jobs.hub_name }}-${{ matrix.jobs.provider }}
+    permissions:
+      id-token: write
+      contents: read
     if: |
       !cancelled() &&
       ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
@@ -425,7 +432,7 @@ jobs:
       uses: ./.github/actions/setup-deploy
       with:
         provider: ${{ matrix.jobs.provider }}
-        AWS_KMS_DECRYPTOR_KEY: ${{ secrets.AWS_KMS_DECRYPTOR_KEY }}
+        AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
 
     - name: Upgrade ${{ matrix.jobs.hub_name }} hub on cluster ${{ matrix.jobs.cluster_name }}
       run: |
@@ -546,6 +553,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [filter-failed-staging]
     name: ${{ matrix.jobs.cluster_name }}-${{ matrix.jobs.hub_name }}-${{ matrix.jobs.provider }}
+    permissions:
+      id-token: write
+      contents: read
     if: |
       !cancelled() &&
       ((github.event_name == 'push' && contains(github.ref, 'main')) || github.event_name == 'workflow_dispatch') &&
@@ -563,6 +573,7 @@ jobs:
       uses: ./.github/actions/setup-deploy
       with:
         provider: ${{ matrix.jobs.provider }}
+        AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
 
     - name: Upgrade ${{ matrix.jobs.hub_name }} hub on cluster ${{ matrix.jobs.cluster_name }}
       run: |

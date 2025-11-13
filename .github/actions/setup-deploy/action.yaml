@@ -36,10 +36,10 @@ inputs:
       A Google Cloud Service Account Key with KMS Decryption privileges. This allows
       us to unlock our sops-encrypted secrets required for a deploy.
     required: false
-  AWS_KMS_DECRYPTOR_KEY:
+  AWS_ROLE_ARN:
     description: >-
-      AWS credentials with KMS Decryption privileges. This allows us to unlock
-      our sops-encrypted secrets required for a deploy.
+      AWS IAM role ARN to assume via OIDC with KMS Decryption privileges. This allows
+      us to unlock our sops-encrypted secrets required for a deploy.
     required: false
 
 # runs (for composite actions) configuration reference:
@@ -134,7 +134,15 @@ runs:
       sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
     shell: bash
 
-  # - name: Setup sops credentials to decrypt repo secrets
-  #   uses: google-github-actions/auth@v2
-  #   with:
-  #     credentials_json: ${{ inputs.GCP_KMS_DECRYPTOR_KEY }}
+  - name: Setup sops credentials to decrypt repo secrets (GCP)
+    if: inputs.provider == 'gcp' && inputs.GCP_KMS_DECRYPTOR_KEY != ''
+    uses: google-github-actions/auth@v2
+    with:
+      credentials_json: ${{ inputs.GCP_KMS_DECRYPTOR_KEY }}
+
+  - name: Setup sops credentials to decrypt repo secrets (AWS)
+    if: inputs.provider == 'aws' && inputs.AWS_ROLE_ARN != ''
+    uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
+      aws-region: us-west-2
