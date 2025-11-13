@@ -64,10 +64,25 @@ jupyterhub:
         userdata_url: https://dev-auth.grss.veda.cloud/realms/veda/protocol/openid-connect/userinfo
         login_service: Keycloak
         username_claim: preferred_username
+        claim_groups_key: groups
+        allowed_groups:
+        - JupyterHub Admin
+        - JupyterHub User
+        - JupyterHub Basic User
+        - JupyterHub GPU User
+        admin_groups:
+        - JupyterHub Admin
         scope:
         - openid
         - profile
         - email
+        - groups
+      Authenticator:
+        admin_users:
+        - slesaad
+        - xhagrg
+        - julianmanandhar
+        - rashmimanandhar
   singleuser:
     cloudMetadata:
       blockWithIptables: false
