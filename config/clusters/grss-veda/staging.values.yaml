@@ -22,7 +22,7 @@ jupyterhub:
   hub:
     config:
       GenericOAuthenticator:
-        oauth_callback_url: https://hub.veda.grss.cloud/hub/oauth_callback
+        oauth_callback_url: https://staging-hub.veda.grss.cloud/hub/oauth_callback
   singleuser:
     nodeSelector:
       2i2c/hub-name: staging
