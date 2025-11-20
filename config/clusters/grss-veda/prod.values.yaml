@@ -10,6 +10,9 @@ jupyterhub:
   hub:
     config:
       GenericOAuthenticator:
+        authorize_url: https://auth.veda.grss.cloud/realms/veda/protocol/openid-connect/auth
+        token_url: https://auth.veda.grss.cloud/realms/veda/protocol/openid-connect/token
+        userdata_url: https://auth.veda.grss.cloud/realms/veda/protocol/openid-connect/userinfo
         oauth_callback_url: https://hub.veda.grss.cloud/hub/oauth_callback
   singleuser:
     nodeSelector:
