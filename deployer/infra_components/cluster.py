@@ -68,6 +68,8 @@ class Cluster:
             [
                 "kubectl",
                 "apply",
+                "--server-side",
+                "--force-conflicts",
                 "-f",
                 f"https://github.com/cert-manager/cert-manager/releases/download/{cert_manager_version}/cert-manager.crds.yaml",
             ]
