@@ -4,7 +4,7 @@ local c = cluster.makeCluster(
   name='grss-veda',
   region='us-west-2',
   nodeAz='us-west-2a',
-  version='1.33',
+  version='1.34',
   coreNodeInstanceType='r8i-flex.large',
   notebookCPUInstanceTypes=[
     'r5.xlarge',

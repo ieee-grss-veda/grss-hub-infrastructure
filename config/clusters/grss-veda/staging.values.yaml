@@ -50,4 +50,4 @@ jupyterhub-home-nfs:
         hard_quota: 1
 nfs:
   pv:
-    serverIP: 10.100.250.195
+    serverIP: home-nfs.staging.svc.cluster.local
