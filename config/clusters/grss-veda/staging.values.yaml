@@ -40,7 +40,7 @@ jupyterhub:
 
 jupyterhub-home-nfs:
   eks:
-    volumeId: vol-057a723a1f8a8db74
+    volumeId: vol-0c2490fecf0b20f7e
   quotaEnforcer:
     config:
       QuotaManager:
