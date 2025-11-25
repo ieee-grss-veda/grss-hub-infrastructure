@@ -42,11 +42,11 @@ dask-gateway:
 
 jupyterhub-home-nfs:
   eks:
-    volumeId: vol-03634044b7a4468b9
+    volumeId: vol-0a91331e7cedd07e2
   quotaEnforcer:
     config:
       QuotaManager:
         hard_quota: 50
 nfs:
   pv:
-    serverIP: home-nfs.prod.svc.cluster.local
+    serverIP: 10.100.2.113
