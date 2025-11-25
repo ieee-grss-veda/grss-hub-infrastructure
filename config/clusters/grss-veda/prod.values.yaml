@@ -46,6 +46,4 @@ jupyterhub-home-nfs:
         hard_quota: 50
 nfs:
   pv:
-    # Use EFS DNS name for prod (EFS ID: fs-013bc0665415fa45d)
-    serverIP: fs-013bc0665415fa45d.efs.us-west-2.amazonaws.com
-    baseShareName: /
+    serverIP: 10.100.2.113

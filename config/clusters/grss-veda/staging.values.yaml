@@ -47,6 +47,4 @@ jupyterhub-home-nfs:
         hard_quota: 1
 nfs:
   pv:
-    # Use EFS DNS name for staging (EFS ID: fs-09c72bb7d96d3def4)
-    serverIP: fs-09c72bb7d96d3def4.efs.us-west-2.amazonaws.com
-    baseShareName: /
+    serverIP:  10.100.173.82
