@@ -26,6 +26,19 @@ ebs_volumes = {
   },
 
 }
+
+# EFS filestores for NFS home directories
+filestores = {
+  "staging" = {
+    name_suffix = "staging",
+    tags        = { "2i2c:hub-name" : "staging" },
+  },
+  "prod" = {
+    name_suffix = "prod",
+    tags        = { "2i2c:hub-name" : "prod" },
+  },
+}
+
 enable_nfs_backup = true
 
 

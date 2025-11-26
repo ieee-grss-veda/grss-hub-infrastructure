@@ -20,23 +20,23 @@ jobs:
   bump-image-tags:
     runs-on: ubuntu-latest
     environment: github-app-token-generator
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # For each new config_path to monitor, add a new item in this matrix.
-          # The Action can read multiple paths to images, but not multiple config files.
-          #
-          # Single image: See this example to bump images in the Callysto cluster
-          # - name: "Callysto hub"
-          #   config_path: "config/clusters/callysto/common.values.yaml"
-          #   images_info: '[{"values_path": ".jupyterhub.singleuser.image"}]'
-          #
-          # profileList: See this example to bump images in Openscapes cluster
-          # - name: "OpenScapes profiles"
-          #   config_path: "config/clusters/openscapes/common.values.yaml"
-          #   # Note: if position of images in profileList changes, update the index in these expressions
-          #   images_info: '[{"values_path": ".basehub.jupyterhub.singleuser.profileList[0].profile_options.image.choices.python.kubespawner_override.image"}, {"values_path": ".basehub.jupyterhub.singleuser.profileList[0].profile_options.image.choices.rocker.kubespawner_override.image"}, {"values_path": ".basehub.jupyterhub.singleuser.profileList[0].profile_options.image.choices.matlab.kubespawner_override.image"}]'
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     include:
+    #       # For each new config_path to monitor, add a new item in this matrix.
+    #       # The Action can read multiple paths to images, but not multiple config files.
+    #       #
+    #       # Single image: See this example to bump images in the Callysto cluster
+    #       # - name: "Callysto hub"
+    #       #   config_path: "config/clusters/callysto/common.values.yaml"
+    #       #   images_info: '[{"values_path": ".jupyterhub.singleuser.image"}]'
+    #       #
+    #       # profileList: See this example to bump images in Openscapes cluster
+    #       # - name: "OpenScapes profiles"
+    #       #   config_path: "config/clusters/openscapes/common.values.yaml"
+    #       #   # Note: if position of images in profileList changes, update the index in these expressions
+    #       #   images_info: '[{"values_path": ".basehub.jupyterhub.singleuser.profileList[0].profile_options.image.choices.python.kubespawner_override.image"}, {"values_path": ".basehub.jupyterhub.singleuser.profileList[0].profile_options.image.choices.rocker.kubespawner_override.image"}, {"values_path": ".basehub.jupyterhub.singleuser.profileList[0].profile_options.image.choices.matlab.kubespawner_override.image"}]'
 
     steps:
       # We want tests to be run on the Pull Request that gets opened by the next step,
@@ -53,11 +53,12 @@ jobs:
         private_key: ${{ secrets.PRIVATE_KEY }}
 
       # Action repo: https://github.com/sgibson91/bump-jhub-image-action
-    - name: 'Bump image tags: ${{ matrix.name }}'
-      uses: sgibson91/bump-jhub-image-action@main
-      with:
-        config_path: ${{ matrix.config_path }}
-        images_info: ${{ matrix.images_info }}
-        github_token: ${{ steps.generate_token.outputs.token }}
-          # team_reviewers: ${{ env.team_reviewers }}
-        dry_run: ${{ github.event.inputs.dry_run || false }}
+      # This step is commented out because no clusters are currently configured for image bumping
+    # - name: 'Bump image tags: ${{ matrix.name }}'
+    #   uses: sgibson91/bump-jhub-image-action@main
+    #   with:
+    #     config_path: ${{ matrix.config_path }}
+    #     images_info: ${{ matrix.images_info }}
+    #     github_token: ${{ steps.generate_token.outputs.token }}
+    #       # team_reviewers: ${{ env.team_reviewers }}
+    #     dry_run: ${{ github.event.inputs.dry_run || false }}
