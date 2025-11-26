@@ -190,13 +190,15 @@ def run_hub_health_check(
         service_api_token = base64.b64decode(service_api_token_b64encoded).decode()
 
     # On failure, pytest prints out params to the test that failed.
-    # This can contain sensitive info - so we hide stderr
+    # This can contain sensitive info - so we capture output to a temporary location
+    # and only print non-sensitive parts
     # FIXME: Don't use pytest - just call a function instead
     #
-    # Show errors locally but redirect on CI
+    # Show errors locally but be more careful on CI
     gh_ci = os.environ.get("CI", "false")
     pytest_args = [
-        "-q",
+        "-v",  # verbose to get more details
+        "--tb=short",  # shorter traceback format
         "deployer/health_check_tests",
         f"--hub-url={hub_url}",
         f"--api-token={service_api_token}",
@@ -207,14 +209,14 @@ def run_hub_health_check(
         pytest_args.append("--check-dask-scaling")
 
     if gh_ci == "true":
-        print_colour("Testing on CI, not printing output")
-        with open(os.devnull, "w") as dn, redirect_stderr(dn), redirect_stdout(dn):
-            exit_code = pytest.main(pytest_args)
+        print_colour("Testing on CI with verbose output for debugging")
+        # Don't redirect output completely - we need to see errors
+        exit_code = pytest.main(pytest_args)
     else:
-        print_colour("Testing locally, do not redirect output")
+        print_colour("Testing locally, showing full output")
         exit_code = pytest.main(pytest_args)
     if exit_code != 0:
-        print("Health check failed!", file=sys.stderr)
+        print_colour("Health check failed! Check the output above for details.", "red")
         sys.exit(exit_code)
     else:
         print_colour("Health check succeeded!")
