@@ -15,17 +15,17 @@ dask-gateway:
 
 jupyterhub:
   ingress:
-    hosts: [staging-hub.veda.grss.cloud]
+    hosts: [hub.staging.veda.grss.cloud]
     tls:
-    - hosts: [staging-hub.veda.grss.cloud]
+    - hosts: [hub.staging.veda.grss.cloud]
       secretName: https-auto-tls
   hub:
     config:
       GenericOAuthenticator:
-        authorize_url: https://dev-auth.veda.grss.cloud/realms/veda/protocol/openid-connect/auth
-        token_url: https://dev-auth.veda.grss.cloud/realms/veda/protocol/openid-connect/token
-        userdata_url: https://dev-auth.veda.grss.cloud/realms/veda/protocol/openid-connect/userinfo
-        oauth_callback_url: https://staging-hub.veda.grss.cloud/hub/oauth_callback
+        authorize_url: https://auth.staging.veda.grss.cloud/realms/veda/protocol/openid-connect/auth
+        token_url: https://auth.staging.veda.grss.cloud/realms/veda/protocol/openid-connect/token
+        userdata_url: https://auth.staging.veda.grss.cloud/realms/veda/protocol/openid-connect/userinfo
+        oauth_callback_url: https://hub.staging.veda.grss.cloud/hub/oauth_callback
   singleuser:
     nodeSelector:
       2i2c/hub-name: staging

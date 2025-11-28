@@ -16,8 +16,8 @@ support:
 hubs:
   - name: staging
     # Tip: consider changing this to something more human friendly
-    display_name: "IEEE GRSS VEDA Hub- staging"
-    domain: staging-hub.veda.grss.cloud
+    display_name: "IEEE GRSS VEDA Hub - staging"
+    domain: hub.staging.veda.grss.cloud
     helm_chart: basehub
     helm_chart_values_files:
       - common.values.yaml
