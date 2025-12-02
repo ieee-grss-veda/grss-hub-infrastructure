@@ -3,17 +3,17 @@
 #     eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-prod
 jupyterhub:
   ingress:
-    hosts: [hub.veda.grss.cloud]
+    hosts: [hub.veda.grss-ieee.org]
     tls:
-    - hosts: [hub.veda.grss.cloud]
+    - hosts: [hub.veda.grss-ieee.org]
       secretName: https-auto-tls
   hub:
     config:
       GenericOAuthenticator:
-        authorize_url: https://auth.veda.grss.cloud/realms/veda/protocol/openid-connect/auth
-        token_url: https://auth.veda.grss.cloud/realms/veda/protocol/openid-connect/token
-        userdata_url: https://auth.veda.grss.cloud/realms/veda/protocol/openid-connect/userinfo
-        oauth_callback_url: https://hub.veda.grss.cloud/hub/oauth_callback
+        authorize_url: https://auth.veda.grss-ieee.org/realms/veda/protocol/openid-connect/auth
+        token_url: https://auth.veda.grss-ieee.org/realms/veda/protocol/openid-connect/token
+        userdata_url: https://auth.veda.grss-ieee.org/realms/veda/protocol/openid-connect/userinfo
+        oauth_callback_url: https://hub.veda.grss-ieee.org/hub/oauth_callback
   singleuser:
     nodeSelector:
       2i2c/hub-name: prod
