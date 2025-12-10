@@ -160,4 +160,4 @@ jupyterhub-home-nfs:
         hard_quota: 50
 nfs:
   pv:
-    serverIP: 10.100.2.113
+    serverIP: 10.100.220.96
