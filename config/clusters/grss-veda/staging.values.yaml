@@ -26,6 +26,7 @@ jupyterhub:
         token_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/token
         userdata_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/userinfo
         oauth_callback_url: https://hub.staging.veda.grss-ieee.org/hub/oauth_callback
+        logout_redirect_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/logout?client_id=jupyterhub&post_logout_redirect_uri=https%3A%2F%2Fhub.staging.veda.grss-ieee.org
   singleuser:
     nodeSelector:
       2i2c/hub-name: staging
