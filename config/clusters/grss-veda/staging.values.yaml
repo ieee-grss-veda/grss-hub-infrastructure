@@ -34,6 +34,50 @@ jupyterhub:
     - display_name: Choose your environment and resources
       default: true
       profile_options:
+        image:
+          display_name: Environment
+          dynamic_image_building:
+            enabled: true
+          unlisted_choice:
+            enabled: true
+            display_name: Custom image
+            display_name_in_choices: Bring your own image
+            validation_regex: ^.+:.+$
+            validation_message: Must be a publicly available docker image, of form <image-name>:<tag>
+            kubespawner_override:
+              image: '{value}'
+          choices:
+            01-modify-pangeo:
+              display_name: Modified Pangeo Notebook
+              description: Pangeo based notebook with a Python environment
+              default: true
+              kubespawner_override:
+                image: public.ecr.aws/nasa-veda/pangeo-notebook-veda-image:2025.08.14-v2
+                init_containers:
+                # this container uses nbgitpuller to mount https://github.com/NASA-IMPACT/veda-docs/ for user pods
+                # image source: https://github.com/NASA-IMPACT/jupyterhub-gitpuller-init
+                - name: jupyterhub-gitpuller-init
+                  image: public.ecr.aws/nasa-veda/jupyterhub-gitpuller-init:97eb45f9d23b128aff810e45911857d5cffd05c2
+                  env:
+                  - name: TARGET_PATH
+                    value: veda-docs
+                  - name: SOURCE_REPO
+                    value: https://github.com/NASA-IMPACT/veda-docs
+                  volumeMounts:
+                  - name: home
+                    mountPath: /home/jovyan
+                    subPath: '{escaped_username}'
+                  securityContext:
+                    runAsUser: 1000
+                    runAsGroup: 1000
+            02-qgis:
+              display_name: QGIS on Linux Desktop
+              description: Linux desktop in the browser, with qgis installed
+              kubespawner_override:
+                # Launch people directly into the Linux desktop when they start
+                default_url: /desktop
+                # Built from https://github.com/2i2c-org/nasa-qgis-image
+                image: quay.io/2i2c/nasa-qgis-image:607df3f5c661
         resource_allocation:
           display_name: Resource Allocation
           choices:
