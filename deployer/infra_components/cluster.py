@@ -68,6 +68,8 @@ class Cluster:
             [
                 "kubectl",
                 "apply",
+                "--server-side",
+                "--force-conflicts",
                 "-f",
                 f"https://github.com/cert-manager/cert-manager/releases/download/{cert_manager_version}/cert-manager.crds.yaml",
             ]
@@ -228,46 +230,74 @@ class Cluster:
         like `KUBECONFIG`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY`
         before trying to authenticate with the `aws eks update-kubeconfig` command.
 
+        If running in GitHub Actions with OIDC, uses the pre-configured AWS credentials
+        instead of decrypting credentials from a file.
+
         Finally get those environment variables to the original values to prevent
         side-effects on existing local configuration.
         """
         config = self.spec["aws"]
-        key_path = self.config_dir / config["key"]
         cluster_name = config["clusterName"]
         region = config["region"]
 
-        # Unset all env vars that start with AWS_, as that might affect the aws
-        # commandline we call. This could make some weird error messages.
-        unset_envs = ["KUBECONFIG"] + [k for k in os.environ if k.startswith("AWS_")]
-
+        # Check if we're running in GitHub Actions with OIDC
+        # The aws-actions/configure-aws-credentials action will have set AWS credentials
+        in_github_actions = os.environ.get("GITHUB_ACTIONS") == "true"
+        aws_session_token = os.environ.get("AWS_SESSION_TOKEN")
+        
         with tempfile.NamedTemporaryFile() as kubeconfig:
-            with get_decrypted_file(key_path) as decrypted_key_path:
-                # Moving this down since we use AWS KMS and unsetting the vars will make the kms key unaccesible
-                with unset_env_vars(unset_envs):
-                    decrypted_key_abspath = os.path.abspath(decrypted_key_path)
-                    if not os.path.isfile(decrypted_key_abspath):
-                        raise FileNotFoundError("The decrypted key file does not exist")
-                    with open(decrypted_key_abspath) as f:
-                        creds = json.load(f)
+            if in_github_actions and aws_session_token:
+                # Use OIDC credentials already configured by GitHub Actions
+                print_colour("Using GitHub Actions OIDC credentials for EKS authentication")
+                os.environ["KUBECONFIG"] = kubeconfig.name
 
-                    os.environ["AWS_ACCESS_KEY_ID"] = creds["AccessKey"]["AccessKeyId"]
-                    os.environ["AWS_SECRET_ACCESS_KEY"] = creds["AccessKey"][
-                        "SecretAccessKey"
+                subprocess.check_call(
+                    [
+                        "aws",
+                        "eks",
+                        "update-kubeconfig",
+                        f"--name={cluster_name}",
+                        f"--region={region}",
                     ]
+                )
 
-            os.environ["KUBECONFIG"] = kubeconfig.name
+                yield
+            else:
+                # Use credentials from encrypted file (local development)
+                print_colour("Using credentials from encrypted file for EKS authentication")
+                key_path = self.config_dir / config["key"]
+                
+                # Unset all env vars that start with AWS_, as that might affect the aws
+                # commandline we call. This could make some weird error messages.
+                unset_envs = ["KUBECONFIG"] + [k for k in os.environ if k.startswith("AWS_")]
 
-            subprocess.check_call(
-                [
-                    "aws",
-                    "eks",
-                    "update-kubeconfig",
-                    f"--name={cluster_name}",
-                    f"--region={region}",
-                ]
-            )
+                with get_decrypted_file(key_path) as decrypted_key_path:
+                    # Moving this down since we use AWS KMS and unsetting the vars will make the kms key unaccesible
+                    with unset_env_vars(unset_envs):
+                        decrypted_key_abspath = os.path.abspath(decrypted_key_path)
+                        if not os.path.isfile(decrypted_key_abspath):
+                            raise FileNotFoundError("The decrypted key file does not exist")
+                        with open(decrypted_key_abspath) as f:
+                            creds = json.load(f)
 
-            yield
+                        os.environ["AWS_ACCESS_KEY_ID"] = creds["AccessKey"]["AccessKeyId"]
+                        os.environ["AWS_SECRET_ACCESS_KEY"] = creds["AccessKey"][
+                            "SecretAccessKey"
+                        ]
+
+                        os.environ["KUBECONFIG"] = kubeconfig.name
+
+                        subprocess.check_call(
+                            [
+                                "aws",
+                                "eks",
+                                "update-kubeconfig",
+                                f"--name={cluster_name}",
+                                f"--region={region}",
+                            ]
+                        )
+
+                        yield
 
     def auth_azure(self):
         """
