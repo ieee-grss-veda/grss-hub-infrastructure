@@ -1742,3 +1742,12 @@ jupyterhub-home-nfs:
 
 jupyterhub-groups-exporter:
   enabled: true
+  # Workaround for jupyterhub-groups-exporter chart 1.1.0+: the deployment template
+  # references .Values.config.groupsExporter.prometheus_host and .prometheus_port
+  # but the chart's own values.yaml omits defaults for them, so they render as empty
+  # strings and crash argparse. Provide explicit values pointing at the in-cluster
+  # Prometheus from the support chart.
+  config:
+    groupsExporter:
+      prometheus_host: support-prometheus-server.support.svc.cluster.local
+      prometheus_port: 80
