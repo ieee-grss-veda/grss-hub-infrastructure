@@ -30,6 +30,29 @@ resource "aws_iam_user_policy" "continuous_deployer" {
         "kms:DescribeKey"
       ],
       "Resource": "arn:aws:kms:${var.region}:*:key/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::grss-veda-tf-state-hub/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::grss-veda-tf-state-hub"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:dynamodb:${var.region}:*:table/terraform-locks"
     }
   ]
 }
