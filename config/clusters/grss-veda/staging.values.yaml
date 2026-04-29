@@ -27,6 +27,56 @@ jupyterhub:
         userdata_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/userinfo
         oauth_callback_url: https://hub.staging.veda.grss-ieee.org/hub/oauth_callback
         logout_redirect_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/logout?client_id=jupyterhub&post_logout_redirect_uri=https%3A%2F%2Fhub.staging.veda.grss-ieee.org
+      # Phase 3: usage-quotas. Library is baked into the hub image via
+      # helm-charts/images/hub/requirements.txt. scope_backup_strategy.empty is
+      # single-resource per the library schema; memory is enforced for all users
+      # via this backup. CPU is collected (in prometheus_usage_metrics) but not
+      # enforced by the backup. To enforce CPU, add a `policy:` entry scoped to
+      # a JupyterHub group (e.g., "JupyterHub Basic User"). Tunable values below.
+      UsageQuotaManager:
+        prometheus_scrape_interval: 60
+        prometheus_url: http://support-prometheus-server.support.svc.cluster.local
+        prometheus_usage_metrics:
+          memory: kube_pod_container_resource_requests{resource='memory'}
+          cpu: kube_pod_container_resource_requests{resource='cpu'}
+        scope_backup_strategy:
+          empty:
+            resource: memory
+            limit:
+              value: 1000
+              unit: GiB-hours
+            window: 7
+          intersection: max
+    extraConfig:
+      11-enforce-usage-quotas: |
+        from jupyterhub_usage_quotas.manager import SpawnException, UsageQuotaManager
+
+        quota_manager = UsageQuotaManager(config=c)
+
+        async def quota_pre_spawn_hook(spawner):
+            try:
+                output = await quota_manager.enforce(spawner)
+                launch_flag = output["allow_server_launch"]
+            except Exception:
+                raise SpawnException(
+                    status_code=424,
+                    log_message="Spawn failed due to a failed dependency in the usage quota system. Please contact your hub admin for assistance.",
+                )
+            if launch_flag is False:
+                raise SpawnException(
+                    status_code=403,
+                    log_message=f"{output['error']['message']}",
+                    html_message=(
+                        f"<p>Compute {output['quota']['resource']} quota limit exceeded.</p>"
+                        f"<p style='font-size:100%'>You have used "
+                        f"<span style='color:var(--bs-red)'>{output['quota']['used']:.2f}</span>"
+                        f" / {output['quota']['limit']['value']:.2f} {output['quota']['limit']['unit']}"
+                        f" in the last {output['quota']['window']} days.</p>"
+                        f"<p style='font-size:100%'>Contact your JupyterHub admin if you need additional quota.</p>"
+                        f"<i style='font-size:100%;color:var(--bs-gray)'>Last updated: {output['timestamp']} (UTC).</i>"
+                    ),
+                )
+        c.KubeSpawner.pre_spawn_hook = quota_pre_spawn_hook
   singleuser:
     nodeSelector:
       2i2c/hub-name: staging
