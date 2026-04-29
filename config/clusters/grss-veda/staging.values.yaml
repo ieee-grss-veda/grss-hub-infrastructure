@@ -55,7 +55,9 @@ jupyterhub:
 
         async def quota_pre_spawn_hook(spawner):
             try:
-                output = await quota_manager.enforce(spawner)
+                user_name = spawner.user.name
+                user_groups = [g.name for g in spawner.user.groups]
+                output = await quota_manager.enforce(user_name, user_groups)
                 launch_flag = output["allow_server_launch"]
             except Exception:
                 raise SpawnException(
