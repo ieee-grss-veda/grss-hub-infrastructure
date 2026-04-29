@@ -1059,7 +1059,7 @@ jupyterhub:
           - groups
     image:
       name: 870461445243.dkr.ecr.us-west-2.amazonaws.com/pilot-hub
-      tag: "0.0.1-0.dev.git.13485.hbeccc702f"
+      tag: "0.0.1-0.dev.git.13999.hfeb4b5e27"
     networkPolicy:
       enabled: true
       # interNamespaceAccessLabels=accept makes the hub pod's associated
