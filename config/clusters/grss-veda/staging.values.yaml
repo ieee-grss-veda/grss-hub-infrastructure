@@ -1,6 +1,6 @@
-# userServiceAccount:
-#   annotations:
-#     eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-staging
+userServiceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-staging
 dask-gateway:
   gateway:
     backend:
