@@ -16,7 +16,9 @@ local c = cluster.makeCluster(
     'r5.4xlarge'
   ],
   hubs=['staging','prod',],
-  notebookGPUNodeGroups=[],
+  notebookGPUNodeGroups=[
+    { instanceType: 'g4dn.xlarge' },
+  ],
   nodeGroupGenerations=['a']
 );
 
