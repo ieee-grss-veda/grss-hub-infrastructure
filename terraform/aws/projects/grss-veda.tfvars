@@ -102,4 +102,4 @@ hub_cloud_permissions = {
 
 
 # Uncomment to enable cost monitoring
-# enable_jupyterhub_cost_monitoring = true
+enable_jupyterhub_cost_monitoring = true
