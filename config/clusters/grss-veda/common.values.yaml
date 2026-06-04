@@ -133,7 +133,7 @@ jupyterhub:
                   - name: TARGET_PATH
                     value: veda-docs
                   - name: SOURCE_REPO
-                    value: https://github.com/NASA-IMPACT/veda-docs
+                    value: https://github.com/ieee-grss-veda/grss-veda-notebooks
                   volumeMounts:
                   - name: home
                     mountPath: /home/jovyan
