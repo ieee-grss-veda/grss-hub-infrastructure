@@ -128,9 +128,9 @@ jupyterhub:
               kubespawner_override:
                 environment:
                   NVIDIA_DRIVER_CAPABILITIES: compute,utility
-                mem_guarantee: 14G
+                mem_guarantee: 12G
                 mem_limit: 14G
-                cpu_guarantee: 3.725
+                cpu_guarantee: 2.5
                 cpu_limit: 3.725
                 node_selector:
                   node.kubernetes.io/instance-type: g4dn.xlarge
