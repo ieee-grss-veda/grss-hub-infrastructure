@@ -12,13 +12,13 @@ cluster_nodes_location = "us-west-2a"
 #
 
 ebs_volumes = {
-"staging" = {
+  "staging" = {
     name_suffix = "staging",
     type        = "gp3",
     size        = 10,
     tags        = { "2i2c:hub-name" : "staging" },
   },
-"prod" = {
+  "prod" = {
     name_suffix = "prod",
     type        = "gp3",
     size        = 10,
@@ -54,12 +54,51 @@ enable_nfs_backup = true
 
 
 # Cloud permissions for hub user pods (via IRSA).
-# staging: read/write to the existing external S3 bucket `hdcrs-school-2026`
+# staging & prod: read/write to the existing external S3 bucket `hdcrs-school-2026`
 #          and read/pull access to the `hdcrs-school-2026` ECR repository.
 # Both resources are external (not created by this terraform), so access is
 # granted via extra_iam_policy scoped to their exact ARNs.
 hub_cloud_permissions = {
   "staging" : {
+    extra_iam_policy : <<-EOT
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": ["s3:*"],
+            "Resource": [
+              "arn:aws:s3:::hdcrs-school-2026",
+              "arn:aws:s3:::hdcrs-school-2026/*"
+            ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": "s3:ListAllMyBuckets",
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": "ecr:GetAuthorizationToken",
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "ecr:BatchGetImage",
+              "ecr:GetDownloadUrlForLayer",
+              "ecr:BatchCheckLayerAvailability",
+              "ecr:DescribeImages",
+              "ecr:DescribeRepositories",
+              "ecr:ListImages"
+            ],
+            "Resource": "arn:aws:ecr:us-west-2:870461445243:repository/hdcrs-school-2026"
+          }
+        ]
+      }
+    EOT
+  },
+  "prod" : {
     extra_iam_policy : <<-EOT
       {
         "Version": "2012-10-17",

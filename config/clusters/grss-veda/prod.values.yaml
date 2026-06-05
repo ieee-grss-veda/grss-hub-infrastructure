@@ -1,6 +1,6 @@
-# userServiceAccount:
-#   annotations:
-#     eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-prod
+userServiceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-prod
 jupyterhub:
   ingress:
     hosts: [hub.veda.grss-ieee.org]
