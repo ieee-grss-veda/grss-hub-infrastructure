@@ -202,7 +202,7 @@ jupyterhub-home-nfs:
   quotaEnforcer:
     config:
       QuotaManager:
-        hard_quota: 50
+        hard_quota: 100
 nfs:
   pv:
     serverIP: 10.100.220.96
