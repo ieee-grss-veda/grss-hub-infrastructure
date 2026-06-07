@@ -56,10 +56,13 @@ enable_nfs_backup = true
 
 
 # Cloud permissions for hub user pods (via IRSA).
-# staging & prod: read/write to the existing external S3 bucket `hdcrs-school-2026`
-#          and read/pull access to the `hdcrs-school-2026` ECR repository.
-# Both resources are external (not created by this terraform), so access is
+# staging & prod: read/write to the existing external S3 bucket `hdcrs-school-2026`,
+#          read/pull access to the `hdcrs-school-2026` ECR repository, and Bedrock
+#          InvokeModel for gpt-oss-120b and Mistral Large 3 in us-west-2.
+# The S3/ECR resources are external (not created by this terraform); access is
 # granted via extra_iam_policy scoped to their exact ARNs.
+# NOTE: Bedrock also requires per-model access to be enabled in the Bedrock console
+# (Model access page, us-west-2) — IAM alone is not sufficient.
 hub_cloud_permissions = {
   "staging" : {
     extra_iam_policy : <<-EOT
@@ -95,6 +98,27 @@ hub_cloud_permissions = {
               "ecr:ListImages"
             ],
             "Resource": "arn:aws:ecr:us-west-2:870461445243:repository/hdcrs-school-2026"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "bedrock:InvokeModel",
+              "bedrock:InvokeModelWithResponseStream"
+            ],
+            "Resource": [
+              "arn:aws:bedrock:*::foundation-model/openai.gpt-oss-120b-1:0",
+              "arn:aws:bedrock:*::foundation-model/mistral.mistral-large-3-675b-instruct",
+              "arn:aws:bedrock:us-west-2:870461445243:inference-profile/*"
+            ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "bedrock:ListFoundationModels",
+              "bedrock:GetFoundationModel",
+              "bedrock:ListInferenceProfiles"
+            ],
+            "Resource": "*"
           }
         ]
       }
@@ -134,6 +158,27 @@ hub_cloud_permissions = {
               "ecr:ListImages"
             ],
             "Resource": "arn:aws:ecr:us-west-2:870461445243:repository/hdcrs-school-2026"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "bedrock:InvokeModel",
+              "bedrock:InvokeModelWithResponseStream"
+            ],
+            "Resource": [
+              "arn:aws:bedrock:*::foundation-model/openai.gpt-oss-120b-1:0",
+              "arn:aws:bedrock:*::foundation-model/mistral.mistral-large-3-675b-instruct",
+              "arn:aws:bedrock:us-west-2:870461445243:inference-profile/*"
+            ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "bedrock:ListFoundationModels",
+              "bedrock:GetFoundationModel",
+              "bedrock:ListInferenceProfiles"
+            ],
+            "Resource": "*"
           }
         ]
       }
