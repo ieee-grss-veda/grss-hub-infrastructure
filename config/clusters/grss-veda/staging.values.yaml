@@ -21,6 +21,13 @@ jupyterhub:
       secretName: https-auto-tls
   hub:
     config:
+      JupyterHub:
+        spawner_class: kubespawner.KubeSpawner
+      KubeSpawner:
+        # Increased timeouts after EBS volume resize to 2TB
+        # NFS-backed home directories need more time for image extraction and server startup
+        start_timeout: 600  # 10 minutes for pod startup and image pull
+        http_timeout: 300   # 5 minutes for Jupyter server to respond
       GenericOAuthenticator:
         authorize_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/auth
         token_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/token
