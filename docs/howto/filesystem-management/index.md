@@ -8,5 +8,6 @@ This documentation covers tasks related to managing filesystems.
 data-transfer
 filesystem-backups/index
 decrease-size-gcp-filestore
+decrease-size-aws-ebs
 increase-disk-size
 ```
