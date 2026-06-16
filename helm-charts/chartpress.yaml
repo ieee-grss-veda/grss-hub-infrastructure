@@ -10,15 +10,18 @@
 #
 charts:
   - name: basehub
-    imagePrefix: quay.io/2i2c/pilot-
+    imagePrefix: 870461445243.dkr.ecr.us-west-2.amazonaws.com/pilot-
     images:
       hub:
         valuesPath: jupyterhub.hub.image
         buildArgs:
           REQUIREMENTS_FILE: requirements.txt
-      pkce-experiment:
-        imageName: quay.io/2i2c/pkce-experiment
-        buildArgs:
-          REQUIREMENTS_FILE: pkce-requirements.txt
-        contextPath: images/hub
-        dockerfilePath: images/hub/Dockerfile
+      # pkce-experiment is hardcoded to push to quay.io/2i2c/* (2i2c's namespace, not grss-veda's).
+      # Disabled because grss-veda doesn't have push access to that namespace and doesn't use this
+      # experimental image. Re-enable + migrate to ECR if/when needed.
+      # pkce-experiment:
+      #   imageName: quay.io/2i2c/pkce-experiment
+      #   buildArgs:
+      #     REQUIREMENTS_FILE: pkce-requirements.txt
+      #   contextPath: images/hub
+      #   dockerfilePath: images/hub/Dockerfile

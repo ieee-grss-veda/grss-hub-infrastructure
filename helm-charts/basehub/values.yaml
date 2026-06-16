@@ -879,7 +879,7 @@ jupyterhub:
         manage_groups: true
         populate_teams_in_auth_state: true
         scope:
-        - read:org
+          - read:org
       Authenticator:
         # Don't allow test username to login into the hub
         # The test service will still be able to create this hub username
@@ -897,7 +897,8 @@ jupyterhub:
             KubeSpawner.image:
               type: string
               title: User docker image
-              description: Determines languages, libraries and interfaces available
+              description: Determines languages, libraries and interfaces 
+                available
               help: Leave this blank to use the default
             Spawner.default_url:
               type: string
@@ -1052,13 +1053,13 @@ jupyterhub:
     loadRoles:
       jupyterhub-groups-exporter:
         services:
-        - jupyterhub-groups-exporter
+          - jupyterhub-groups-exporter
         scopes:
-        - users
-        - groups
+          - users
+          - groups
     image:
-      name: quay.io/2i2c/pilot-hub
-      tag: "0.0.1-0.dev.git.12172.hf6a94ef2"
+      name: 870461445243.dkr.ecr.us-west-2.amazonaws.com/pilot-hub
+      tag: "0.0.1-0.dev.git.13999.hfeb4b5e27"
     networkPolicy:
       enabled: true
       # interNamespaceAccessLabels=accept makes the hub pod's associated
@@ -1642,7 +1643,7 @@ jupyterhub:
 
       08-auth-state-groups: |
         # Pass the user's GitHub teams from auth_state to JupyterHub group memberships.
-        
+
         async def custom_auth_state_groups_key(auth_state):
           if "teams" not in auth_state.keys():
             print("No GitHub teams found in auth_state.")
@@ -1742,3 +1743,12 @@ jupyterhub-home-nfs:
 
 jupyterhub-groups-exporter:
   enabled: true
+  # Workaround for jupyterhub-groups-exporter chart 1.1.0+: the deployment template
+  # references .Values.config.groupsExporter.prometheus_host and .prometheus_port
+  # but the chart's own values.yaml omits defaults for them, so they render as empty
+  # strings and crash argparse. Provide explicit values pointing at the in-cluster
+  # Prometheus from the support chart.
+  config:
+    groupsExporter:
+      prometheus_host: support-prometheus-server.support.svc.cluster.local
+      prometheus_port: 80
