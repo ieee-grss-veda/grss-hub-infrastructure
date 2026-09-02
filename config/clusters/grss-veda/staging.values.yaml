@@ -1,6 +1,6 @@
-# userServiceAccount:
-#   annotations:
-#     eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-staging
+userServiceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::870461445243:role/grss-veda-staging
 dask-gateway:
   gateway:
     backend:
@@ -21,6 +21,13 @@ jupyterhub:
       secretName: https-auto-tls
   hub:
     config:
+      JupyterHub:
+        spawner_class: kubespawner.KubeSpawner
+      KubeSpawner:
+        # Increased timeouts after EBS volume resize to 2TB
+        # NFS-backed home directories need more time for image extraction and server startup
+        start_timeout: 600  # 10 minutes for pod startup and image pull
+        http_timeout: 300   # 5 minutes for Jupyter server to respond
       GenericOAuthenticator:
         authorize_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/auth
         token_url: https://auth.staging.veda.grss-ieee.org/realms/veda/protocol/openid-connect/token
@@ -120,6 +127,22 @@ jupyterhub:
                 cpu_limit: 3.725
                 node_selector:
                   node.kubernetes.io/instance-type: r5.xlarge
+            gpu_t4:
+              display_name: NVIDIA T4 GPU, ~16 GB GPU RAM, ~16 GB RAM, ~4 CPUs
+              allowed_groups:
+                - JupyterHub Admin
+                - JupyterHub GPU User
+              kubespawner_override:
+                environment:
+                  NVIDIA_DRIVER_CAPABILITIES: compute,utility
+                mem_guarantee: 12G
+                mem_limit: 14G
+                cpu_guarantee: 2.5
+                cpu_limit: 3.725
+                node_selector:
+                  node.kubernetes.io/instance-type: g4dn.xlarge
+                extra_resource_limits:
+                  nvidia.com/gpu: "1"
 
 # binderhub-service:
 #   dockerApi:
@@ -138,7 +161,7 @@ jupyterhub-home-nfs:
   quotaEnforcer:
     config:
       QuotaManager:
-        hard_quota: 1
+        hard_quota: 100
 nfs:
   pv:
     serverIP: 10.100.173.82

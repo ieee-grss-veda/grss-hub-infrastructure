@@ -452,10 +452,14 @@ redirects:
   rules: []
 
 # Enable a daemonset to install nvidia device plugin to GPU nodes
-# Not necessary on GCP & AWS don't need this, as it is handled automatically by terraform or eksctl
-# respectively
+# Not necessary on GCP (handled by terraform). On AWS, GPU nodes running the
+# AL2023_x86_64_NVIDIA AMI ship the driver + container toolkit but NOT a device
+# plugin, so the `aws` variant (templates/aws-nvidia-device-plugin.yaml) must be
+# enabled on clusters that have GPU node groups.
 nvidiaDevicePlugin:
   azure:
+    enabled: false
+  aws:
     enabled: false
 
 # Setup a separate storageClass specifically for prometheus data

@@ -5,6 +5,7 @@ resource "aws_ebs_volume" "nfs_home_dirs" {
   size              = each.value.size
   type              = each.value.type
   iops              = each.value.iops
+  throughput        = each.value.throughput
   encrypted         = true
 
   tags = merge(each.value.tags, {
