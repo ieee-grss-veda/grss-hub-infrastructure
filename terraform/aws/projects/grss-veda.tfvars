@@ -17,6 +17,7 @@ ebs_volumes = {
     type        = "gp3",
     size        = 2000,
     iops        = 6000,
+    throughput  = 250,
     tags        = { "2i2c:hub-name" : "staging" },
   },
   "prod" = {
@@ -24,6 +25,7 @@ ebs_volumes = {
     type        = "gp3",
     size        = 2000,
     iops        = 6000,
+    throughput  = 250,
     tags        = { "2i2c:hub-name" : "prod" },
   },
 
